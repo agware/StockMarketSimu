@@ -24,11 +24,9 @@
       <file leaf-file-name="Main.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-              <folding>
-                <element signature="e#1715#2225#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="110">
+              <caret line="5" column="43" lean-forward="true" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -36,14 +34,17 @@
       <file leaf-file-name="Simulation.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Simulation.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="790">
-              <caret line="169" column="13" lean-forward="false" selection-start-line="169" selection-start-column="13" selection-end-line="169" selection-end-column="13" />
+            <state relative-caret-position="308">
+              <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
               <folding>
                 <element signature="n#!!block;n#initNews#0" expanded="false" />
                 <element signature="n#!!block;n#updateNews#0" expanded="false" />
-                <element signature="n#!!block;n#updatePrices#0" expanded="false" />
+                <element signature="n#!!block;n#initDrink#0" expanded="false" />
+                <element signature="n#!!block;n#updateBeer#0" expanded="false" />
+                <element signature="n#!!block;n#updateSpirits#0" expanded="false" />
                 <element signature="n#!!block;n#updateMean#0" expanded="false" />
                 <element signature="n#!!block;n#updateVol#0" expanded="false" />
+                <element signature="n#!!block;n#rnorm#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -52,8 +53,8 @@
       <file leaf-file-name="styles.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/styles.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
-              <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+            <state relative-caret-position="252">
+              <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -75,6 +76,9 @@
       <find>time</find>
       <find>console</find>
       <find>scaleO</find>
+      <find>xaxis</find>
+      <find>axes</find>
+      <find>bottom</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -229,12 +233,12 @@
       <option name="presentableId" value="Default" />
       <updated>1510305408369</updated>
       <workItem from="1510305410047" duration="3928000" />
-      <workItem from="1510369528760" duration="16912000" />
+      <workItem from="1510369528760" duration="22742000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20840000" />
+    <option name="totallyTimeSpent" value="26670000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="952" y="0" width="976" height="1038" extended-state="0" />
@@ -266,7 +270,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <option name="time" value="8" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -275,9 +279,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="418">
           <caret line="19" column="16" lean-forward="false" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-          <folding>
-            <element signature="e#1715#2225#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -326,7 +328,7 @@
         <state relative-caret-position="-1686">
           <caret line="53" column="34" lean-forward="true" selection-start-line="53" selection-start-column="34" selection-end-line="53" selection-end-column="34" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -341,32 +343,33 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/styles.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        <state relative-caret-position="252">
+          <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding>
-            <element signature="e#1715#2225#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="110">
+          <caret line="5" column="43" lean-forward="true" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Simulation.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="790">
-          <caret line="169" column="13" lean-forward="false" selection-start-line="169" selection-start-column="13" selection-end-line="169" selection-end-column="13" />
+        <state relative-caret-position="308">
+          <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
           <folding>
             <element signature="n#!!block;n#initNews#0" expanded="false" />
             <element signature="n#!!block;n#updateNews#0" expanded="false" />
-            <element signature="n#!!block;n#updatePrices#0" expanded="false" />
+            <element signature="n#!!block;n#initDrink#0" expanded="false" />
+            <element signature="n#!!block;n#updateBeer#0" expanded="false" />
+            <element signature="n#!!block;n#updateSpirits#0" expanded="false" />
             <element signature="n#!!block;n#updateMean#0" expanded="false" />
             <element signature="n#!!block;n#updateVol#0" expanded="false" />
+            <element signature="n#!!block;n#rnorm#0" expanded="false" />
           </folding>
         </state>
       </provider>

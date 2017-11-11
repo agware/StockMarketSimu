@@ -1,3 +1,71 @@
+function initStock(stockCollection) {
+    let svg = d3.select("#market-container").append('svg')
+        .attr('height', '100%')
+        .attr('width', '100%');
+
+    let margin = {top: 30, right: 20, bottom: 30, left: 50};
+    let width = 600 - margin.left - margin.right;
+    let height = 270 - margin.top - margin.bottom;
+
+    // Set the ranges
+    let x = d3.scaleLinear().range([0, width]);
+    let y = d3.scaleLinear().range([height, 0]);
+
+    // Scale the range of the data
+    x.domain([0, 200]);
+    y.domain([-5, 5]);
+
+    // Define the line
+    let valueLine = d3.line()
+        .x(function(d,i) { return x(i); })
+        .y(function(d) { return y(d); });
+
+    let g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    g.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    g.append('g')
+        .call(d3.axisLeft(y))
+        .append('text')
+        .attr('class', 'y-axis')
+        .attr('fill', '#000')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '0.71em')
+        .attr('text-anchor', 'end')
+        .text('Stock Price ($)');
+
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueLine(stockCollection));
+
+    let settings = {'x': x, 'y': y, 'svg': svg, 'valueLine': valueLine};
+    return settings;
+}
+
+function updateStock(stockCollection, settings) {
+    let svg = settings.svg;
+    let x = settings.x;
+    let y = settings.y;
+    let valueLine = settings.valueLine;
+
+    x.domain([0,stockCollection.length]);
+    y.domain([-5, 5]);
+
+    svg.select('.line')
+        .attr('d', valueLine(stockCollection));
+    svg.select('.x-axis')
+        .call(d3.axisBottom(x));
+    svg.select('.y-axis')
+        .call(d3.axisLeft(y));
+}
+
+
 function initNews() {
     let newsSVG = d3.select("#news-container").append('svg')
         .attr('width', '100%')
@@ -34,7 +102,7 @@ function initNews() {
         .text('0');
 }
 
-function updateNews(secondCount, current) {
+function updateNews(secondCount, stock) {
     let news = [
         {phrase: "World Alcohol Shortage", reaction: "Market Goes Down!", value: -1, probability: 0.1},
         {phrase: "Alcohol is Healthy!", reaction: "Market Goes Up!", value: 1, probability: 0.1},
@@ -45,9 +113,9 @@ function updateNews(secondCount, current) {
     for(let i = 0; i < news.length; i++) {
         if(news[i].phrase.localeCompare(d3.select('#news-phrase').text())) {
             if(news[i].value == -1) {
-                current -= 1;
+                stock -= 1;
             } else if(news[i].value == 1) {
-                current += 1;
+                stock += 1;
             }
             break;
         }
@@ -70,73 +138,50 @@ function updateNews(secondCount, current) {
         }
         d3.select('#news-phrase').text(news[newsIndex].phrase);
     }
-    return current;
+    return stock;
 }
 
-function updatePrices(secondCount) {
-    const priceUpdate = 3;
-    if (secondCount % priceUpdate == 0) {
-        updateBeer(current);
-        updateSpirits(current);
-    }
-}
 
-function initBeer() {
-    let beer = [
-        {name: "Apple Cider", priceCurrent: 3, priceOriginal: 3},
-        {name: "Pear Cider", priceCurrent: 3, priceOriginal: 3},
-        {name: "Corona", priceCurrent: 3.5, priceOriginal: 3.5},
-        {name: "Asahi", priceCurrent: 3, priceOriginal: 3},
-        {name: "Stella", priceCurrent: 3, priceOriginal: 3},
-        {name: "Peroni", priceCurrent: 3, priceOriginal: 3},
-        {name: "VB", priceCurrent: 2, priceOriginal: 2},
-    ];
-
-    let svg = d3.select("#beer-container").append("svg")
-            .attr('width', '100%')
-            .attr('height', '100%');
-
-    let margin = {top: 20, right: 20, bottom: 30, left: 40};
+function initDrink(idTag) {
+    //Set size of svg element and chart
+    let svg = d3.select(idTag).append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%');
+    let margin = {top: 10, right: 10, bottom: 10, left: 10};
     let w = svg.style('width');
     let width = w.substr(0,w.length-2) - margin.left - margin.right;
     let h = svg.style('height');
-    let height = h.substr(0,h.length-2)  - margin.top - margin.bottom;
+    let height = h.substr(0,h.length-2) - margin.top - margin.bottom;
+    let categoryIndent = width/10;
+    let defaultBarWidth = width*2;
 
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
-    let y = d3.scaleLinear().rangeRound([height, 0]);
+    //Set up scales
+    var x = d3.scaleLinear()
+        .domain([0,defaultBarWidth])
+        .range([0,width]);
+    var y = d3.scaleBand()
+        .rangeRound([0, height]).padding(0.1);
 
-    let g = svg.append("g")
+    svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain(beer.map(function(d) { return d.name; }));
-    y.domain([0, d3.max(beer, function(d) { return d.priceCurrent; })]);
-
-    g.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-    g.append("g")
-        .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(d3.max(beer, function(d) { return d.priceCurrent; })))
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text("Price");
-
-    g.selectAll(".bar")
-        .data(beer)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.name); })
-        .attr("y", function(d) { return y(d.priceCurrent); })
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.priceCurrent); });
+    //Package and export settings
+    let settings = {
+        margin:margin, width:width, height:height, categoryIndent:categoryIndent,
+        svg:svg, x:x, y:y
+    };
+    return settings;
 }
 
-function updateBeer(current) {
+function updatePrices(secondCount, stock, beerSettings, spiritSettings) {
+    const priceUpdate = 5;
+    if (secondCount % priceUpdate == 0 || secondCount < 3) {
+        updateBeer(stock, beerSettings);
+        updateSpirits(stock, spiritSettings);
+    }
+}
+
+function updateBeer(stock, beerSettings) {
     let beer = [
         {name: "Apple Cider", priceCurrent: 3, priceOriginal: 3},
         {name: "Pear Cider", priceCurrent: 3, priceOriginal: 3},
@@ -148,15 +193,16 @@ function updateBeer(current) {
     ];
 
     for (let i = 0; i < beer.length; i++) {
-        beer[i].priceCurrent = beer[i].priceOriginal - rnorm(beer.length, current / 5, .2);
+        beer[i].priceCurrent = beer[i].priceOriginal - rnorm(stock/5, .2);
         if (beer[i].priceCurrent < 1) {
             beer[i].priceCurrent = 1
         }
     }
 
+    updateBarChart(beer, beerSettings);
 }
 
-function updateSpirits(current) {
+function updateSpirits(stock, spiritSettings) {
     let spirit = [
         {name: "Vodka", priceCurrent: 2.5, priceOriginal: 3},
         {name: "Jack Daniels", priceCurrent: 3, priceOriginal: 3},
@@ -171,20 +217,114 @@ function updateSpirits(current) {
     ];
 
     for (let i = 0; i < spirit.length; i++) {
-        spirit[i].priceCurrent = spirit[i].priceOriginal - rnorm(spirit.length, current / 5, .2);
+        spirit[i].priceCurrent = spirit[i].priceOriginal - rnorm(stock / 5, .2);
         if (spirit[i].priceCurrent < 1) {
             spirit[i].priceCurrent = 1
         }
     }
+
+    updateBarChart(spirit, spiritSettings);
 }
 
-function updateMean(current) {
+function updateBarChart(drink, settings) {
+    //Import settings
+    let margin = settings.margin;
+    let width = settings.width;
+    let height = settings.height;
+    let categoryIndent = settings.categoryIndent;
+    let svg=settings.svg;
+    let x=settings.x;
+    let y=settings.y;
+
+    //Reset domains
+    y.domain(drink.sort(function(a,b){
+        return b.priceCurrent - a.priceCurrent;
+    })
+        .map(function(d) { return d.name; }));
+
+    let barMax = d3.max(drink, function(d) {
+        return d.priceCurrent;
+    });
+    x.domain([0,barMax]);
+
+    //Bind new data to chart rows
+
+    //Create chart row and move to below the bottom of the chart
+    let chartRow = svg.selectAll("g.chartRow")
+        .data(drink, function(d){ return d.name});
+    let newRow = chartRow
+        .enter()
+        .append("g")
+        .attr("class", "chartRow")
+        .attr("transform", "translate(0," + height + margin.top + margin.bottom + ")");
+
+    //Add rectangles
+    newRow.insert("rect")
+        .attr("class","bar")
+        .attr("x", 0)
+        .attr("opacity",0)
+        .attr("height", y.bandwidth())
+        .attr("width", function(d) { return x(d.priceCurrent);});
+
+    //Add value labels
+    newRow.append("text")
+        .attr("class","label")
+        .attr("y", y.bandwidth()/2)
+        .attr("x",0)
+        .attr("opacity",0)
+        .attr("dy",".35em")
+        .attr("dx","0.5em")
+        .text(function(d){return d.priceCurrent;});
+
+    //Add Headlines
+    newRow.append("text")
+        .attr("class","category")
+        .attr("text-overflow","ellipsis")
+        .attr("y", y.bandwidth()/2)
+        .attr("x",categoryIndent)
+        .attr("opacity",0)
+        .attr("dy",".35em")
+        .attr("dx","0.5em")
+        .text(function(d){return d.name});
+
+    //Update bar widths
+    chartRow.select(".bar").transition()
+        .duration(300)
+        .attr("width", function(d) { return x(d.priceCurrent);})
+        .attr("opacity",1);
+
+    //Update data labels
+    chartRow.select(".label").transition()
+        .duration(300)
+        .attr("opacity",1)
+        .text(function(d) {return "$" + Math.round(d.priceCurrent*10)/10; });
+
+    //Fade in categories
+    chartRow.select(".category").transition()
+        .duration(300)
+        .attr("opacity",1);
+
+    chartRow.exit().transition()
+        .style("opacity","0")
+        .attr("transform", "translate(0," + (height + margin.top + margin.bottom) + ")")
+        .remove();
+
+    let delay = function(d, i) { return 200 + i * 30; };
+
+    chartRow.transition()
+        .delay(delay)
+        .duration(900)
+        .attr("transform", function(d){ return "translate(0," + y(d.name) + ")"; });
+}
+
+
+function updateMean(stock) {
     const tooLow = -4.5;
     const tooHigh = 6;
     const adjustment = 0.2;
-    if (current < tooLow) {
+    if (stock < tooLow) {
         mean = adjustment;
-    } else if (current > tooHigh) {
+    } else if (stock > tooHigh) {
         mean = -adjustment;
     } else {
         mean = 0;
@@ -192,9 +332,9 @@ function updateMean(current) {
     return mean;
 }
 
-function updateVol(secondCount, currentCollection){
+function updateVol(secondCount, stockCollection){
     if (secondCount > 200) {
-        let current100 = currentCollection.slice(currentCollection.length - 1, currentCollection.length);
+        let current100 = stockCollection.slice(stockCollection.length - 1, stockCollection.length);
         let maxCurrent = current100.reduce(function (a, b) {
             return Math.max(a, b)
         });
@@ -208,4 +348,27 @@ function updateVol(secondCount, currentCollection){
         }
     }
     return vol;
+}
+
+/** Taken from the RandGen library */
+/** Important: None of the following is mine */
+function rnorm(mean, stdev) {
+    var u1, u2, v1, v2, s;
+    if (mean === undefined) {
+        mean = 0.0;
+    }
+    if (stdev === undefined) {
+        stdev = 1.0;
+    }
+
+    do {
+        u1 = Math.random();
+        u2 = Math.random();
+
+        v1 = 2 * u1 - 1;
+        v2 = 2 * u2 - 1;
+        s = v1 * v1 + v2 * v2;
+    } while (s === 0 || s >= 1);
+    rnorm.v2 = v2 * Math.sqrt(-2 * Math.log(s) / s);
+    return stdev * v1 * Math.sqrt(-2 * Math.log(s) / s) + mean;
 }

@@ -6,13 +6,11 @@
     width: 100%;
     min-width: 600px;
     min-height: 600px;
-    background: palegoldenrod;
 }
 
 .graph-container {
     width: 47%;
     height: 47%;
-    border: 1px solid black;
 }
 
 #market-container {
@@ -40,9 +38,5 @@
 }
 
 .bar {
-    fill: steelblue;
-}
-
-.bar:hover {
-    fill: brown;
+    fill: #cbcbcb;
 }
