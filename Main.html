@@ -19,7 +19,6 @@
 <script src="Simulation.js"></script>
 <script>
     let stock = rnorm(0,0.1);
-    const gap = 100;
     let stockCollection = [];
     let secondCount = 0;
     let mean = 0;
@@ -33,7 +32,7 @@
     d3.timer(generateValues);
 
     function generateValues(timeElapsed) {
-        let secondsElapsed = Math.floor(timeElapsed/1000);
+        let secondsElapsed = Math.floor(timeElapsed/500)/2;
 
         const secondsInHour = 360;
         const hours = 4;
@@ -46,7 +45,7 @@
         if(secondsElapsed > secondCount) {
             secondCount = secondsElapsed;
             stockCollection.push(stock);
-            if(stockCollection.length > 200) {
+            if(stockCollection.length > 100) {
                 stockCollection.shift();
             }
             updateStock(stockCollection, stockSettings);

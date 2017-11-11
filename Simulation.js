@@ -1,67 +1,71 @@
 function initStock(stockCollection) {
-    let svg = d3.select("#market-container").append('svg')
+    let svg = d3.select('#market-container').append('svg')
         .attr('height', '100%')
         .attr('width', '100%');
 
-    let margin = {top: 30, right: 20, bottom: 30, left: 50};
-    let width = 600 - margin.left - margin.right;
-    let height = 270 - margin.top - margin.bottom;
+    // set the dimensions and margins of the graph
+    let margin = {top: 20, right: 20, bottom: 30, left: 50};
+    let w = svg.style('width');
+    let width = w.substr(0,w.length-2) - margin.left - margin.right;
+    let h = svg.style('height');
+    let height = h.substr(0,h.length-2) - margin.top - margin.bottom;
 
-    // Set the ranges
-    let x = d3.scaleLinear().range([0, width]);
-    let y = d3.scaleLinear().range([height, 0]);
 
-    // Scale the range of the data
-    x.domain([0, 200]);
-    y.domain([-5, 5]);
+    var x = d3.scaleLinear().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
 
-    // Define the line
-    let valueLine = d3.line()
-        .x(function(d,i) { return x(i); })
+    // define the line
+    var valueLine = d3.line()
+        .x(function(d, i) { return x(i); })
         .y(function(d) { return y(d); });
+
 
     let g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    g.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(d3.axisBottom(x));
+    // Scale the range of the data
+    x.domain([0, 100]);
+    y.domain([-5, 5]);
 
-    g.append('g')
-        .call(d3.axisLeft(y))
-        .append('text')
-        .attr('class', 'y-axis')
-        .attr('fill', '#000')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '0.71em')
-        .attr('text-anchor', 'end')
-        .text('Stock Price ($)');
-
-    // Add the valueline path.
-    svg.append("path")
+    // Add the valueLine path.
+    g.append("path")
+        .data([stockCollection])
         .attr("class", "line")
-        .attr("d", valueLine(stockCollection));
+        .attr("d", valueLine)
+        .style('fill', 'none')
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.5);
 
-    let settings = {'x': x, 'y': y, 'svg': svg, 'valueLine': valueLine};
+    // Add the X Axis
+    g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+    // Add the Y Axis
+    g.append("g")
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(y));
+
+    let settings = {'svg': svg, 'valueLine': valueLine, 'y': y};
     return settings;
 }
 
 function updateStock(stockCollection, settings) {
     let svg = settings.svg;
-    let x = settings.x;
-    let y = settings.y;
     let valueLine = settings.valueLine;
+    let y = settings.y;
 
-    x.domain([0,stockCollection.length]);
-    y.domain([-5, 5]);
+    y.domain([Math.min(-5,d3.min(stockCollection, function(d) {return d; })),
+    Math.max(5,d3.max(stockCollection, function(d) {return d; }))]);
 
-    svg.select('.line')
+    svg.select('.line').transition()
+        .duration(100)
         .attr('d', valueLine(stockCollection));
-    svg.select('.x-axis')
-        .call(d3.axisBottom(x));
-    svg.select('.y-axis')
+
+    svg.select('.y-axis').transition()
+        .duration(100)
         .call(d3.axisLeft(y));
 }
 
@@ -104,30 +108,20 @@ function initNews() {
 
 function updateNews(secondCount, stock) {
     let news = [
-        {phrase: "World Alcohol Shortage", reaction: "Market Goes Down!", value: -1, probability: 0.1},
+        {phrase: "World Alcohol Shortage", reaction: "Market Goes Down!", value: -1, probability: 0.2},
         {phrase: "Alcohol is Healthy!", reaction: "Market Goes Up!", value: 1, probability: 0.1},
-        {phrase: "No Alcohol News", reaction: "", value: 0, probability: 0.7},
+        {phrase: "No Alcohol News", reaction: "", value: 0, probability: 0.6},
         {phrase: "Beers in Great Demand", reaction: "Market Goes Up!", value: 1, probability: 0.1}
     ];
 
-    for(let i = 0; i < news.length; i++) {
-        if(news[i].phrase.localeCompare(d3.select('#news-phrase').text())) {
-            if(news[i].value == -1) {
-                stock -= 1;
-            } else if(news[i].value == 1) {
-                stock += 1;
-            }
-            break;
-        }
-    }
-
     // Update news
-    const newsUpdate = 7;
+    const newsUpdate = 4;
     let newsIndex = 0;
-    d3.select('#news-time').text(newsUpdate - (secondCount-1)%newsUpdate - 1);
+    d3.select('#news-time').text(Math.round(newsUpdate - (secondCount-0.5)%newsUpdate - 1));
     if (secondCount % newsUpdate == 0) {
         // Work around to select different news items based on given probability
         let temp = Math.random();
+        console.log(temp);
         for (let i = 0; i < news.length; i++) {
             if (temp < news[i].probability) {
                 newsIndex = i;
@@ -138,6 +132,19 @@ function updateNews(secondCount, stock) {
         }
         d3.select('#news-phrase').text(news[newsIndex].phrase);
     }
+
+    let tempText = d3.select('#news-phrase').text();
+    for(let i = 0; i < news.length; i++) {
+        if(tempText === news[i].phrase) {
+            if(news[i].value == -1) {
+                stock -= .5;
+            } else if(news[i].value == 1) {
+                stock += .5;
+            }
+            break;
+        }
+    }
+
     return stock;
 }
 
@@ -175,7 +182,7 @@ function initDrink(idTag) {
 
 function updatePrices(secondCount, stock, beerSettings, spiritSettings) {
     const priceUpdate = 5;
-    if (secondCount % priceUpdate == 0 || secondCount < 3) {
+    if (secondCount % priceUpdate == 0 || secondCount < 1.5) {
         updateBeer(stock, beerSettings);
         updateSpirits(stock, spiritSettings);
     }
