@@ -10,31 +10,31 @@
 }
 
 .graph-container {
-    width: 48%;
-    height: 48%;
+    width: 47%;
+    height: 47%;
     border: 1px solid black;
 }
 
 #market-container {
     position: absolute;
-    top: 1%;
-    left: 1%;
+    top: 2%;
+    left: 2%;
 }
 
 #spirits-container {
     position: absolute;
-    top: 1%;
-    right: 1%;
+    top: 2%;
+    right: 2%;
 }
 
 #announcement-container {
     position: absolute;
-    bottom: 1%;
-    left: 1%;
+    bottom: 2%;
+    left: 2%;
 }
 
 #beer-container {
     position: absolute;
-    bottom: 1%;
-    right: 1%;
+    bottom: 2%;
+    right: 2%;
 }
