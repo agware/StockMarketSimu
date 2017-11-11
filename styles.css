@@ -1,0 +1,40 @@
+#main-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 600px;
+    min-height: 600px;
+    background: palegoldenrod;
+}
+
+.graph-container {
+    width: 48%;
+    height: 48%;
+    border: 1px solid black;
+}
+
+#market-container {
+    position: absolute;
+    top: 1%;
+    left: 1%;
+}
+
+#spirits-container {
+    position: absolute;
+    top: 1%;
+    right: 1%;
+}
+
+#announcement-container {
+    position: absolute;
+    bottom: 1%;
+    left: 1%;
+}
+
+#beer-container {
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+}
