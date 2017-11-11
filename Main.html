@@ -17,6 +17,75 @@
 </div>
 
 <script src="Simulation.js"></script>
+<script>
+    let current = rnorm(0,0.1);
+    const gap = 100;
+    let currentCollection = [];
+    for(let i = 0; i < gap; i++) {
+        currentCollection.push(rnorm(0,.01));
+    }
+    let secondCount = 0;
+    let mean = 0;
+    let vol = 0.25;
+
+    initNews();
+    initBeer();
+
+    d3.timer(generateValues);
+
+    function generateValues(timeElapsed) {
+        let secondsElapsed = Math.floor(timeElapsed/1000);
+
+        const secondsInHour = 360;
+        const hours = 4;
+        const maxTime = hours * secondsInHour;
+        if(secondsElapsed >= maxTime) {
+            // terminate value generation
+            return true;
+        }
+
+        if(secondsElapsed > secondCount) {
+            secondCount = secondsElapsed;
+
+            current = updateNews(secondCount, current);
+            updatePrices(secondCount);
+
+            current += rnorm(mean, vol);
+            currentCollection.push(current);
+            mean = updateMean(current);
+
+            vol = updateVol(secondCount, currentCollection);
+
+        }
+    }
+
+
+
+
+
+    /** Taken from the RandGen library */
+    /** Important: None of the following is mine */
+    function rnorm(mean, stdev) {
+        var u1, u2, v1, v2, s;
+        if (mean === undefined) {
+            mean = 0.0;
+        }
+        if (stdev === undefined) {
+            stdev = 1.0;
+        }
+
+        do {
+            u1 = Math.random();
+            u2 = Math.random();
+
+            v1 = 2 * u1 - 1;
+            v2 = 2 * u2 - 1;
+            s = v1 * v1 + v2 * v2;
+        } while (s === 0 || s >= 1);
+        rnorm.v2 = v2 * Math.sqrt(-2 * Math.log(s) / s);
+        return stdev * v1 * Math.sqrt(-2 * Math.log(s) / s) + mean;
+    }
+</script>
 
 </body>
 </html>

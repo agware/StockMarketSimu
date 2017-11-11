@@ -38,3 +38,11 @@
     bottom: 2%;
     right: 2%;
 }
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: brown;
+}

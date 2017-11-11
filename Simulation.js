@@ -1,18 +1,3 @@
-let current = rnorm(0,0.1);
-const gap = 100;
-let currentCollection = [];
-for(let i = 0; i < gap; i++) {
-    currentCollection.push(rnorm(0,.01));
-}
-let secondCount = 0;
-let mean = 0;
-let newsIndex = 2;
-let vol = 0.25;
-
-initNews();
-
-d3.timer(generateValues);
-
 function initNews() {
     let newsSVG = d3.select("#news-container").append('svg')
         .attr('width', '100%')
@@ -49,36 +34,7 @@ function initNews() {
         .text('0');
 }
 
-function generateValues(timeElapsed) {
-    let secondsElapsed = Math.floor(timeElapsed/1000);
-
-    const secondsInHour = 360;
-    const hours = 4;
-    const maxTime = hours * secondsInHour;
-    if(secondsElapsed >= maxTime) {
-        // terminate value generation
-        return true;
-    }
-
-    if(secondsElapsed > secondCount) {
-        secondCount = secondsElapsed;
-
-        updateNews();
-        updatePrices();
-
-        current += rnorm(mean, vol);
-        console.log(current);
-        currentCollection.push(current);
-        updateMean();
-
-        // ToDo: update charts here
-
-        updateVol();
-
-    }
-}
-
-function updateNews() {
+function updateNews(secondCount, current) {
     let news = [
         {phrase: "World Alcohol Shortage", reaction: "Market Goes Down!", value: -1, probability: 0.1},
         {phrase: "Alcohol is Healthy!", reaction: "Market Goes Up!", value: 1, probability: 0.1},
@@ -86,15 +42,20 @@ function updateNews() {
         {phrase: "Beers in Great Demand", reaction: "Market Goes Up!", value: 1, probability: 0.1}
     ];
 
-    // Update current value based on news
-    if (news[newsIndex].value == -1) {
-        current -= 1;
-    } else if (news[newsIndex].value == 1) {
-        current += 1;
+    for(let i = 0; i < news.length; i++) {
+        if(news[i].phrase.localeCompare(d3.select('#news-phrase').text())) {
+            if(news[i].value == -1) {
+                current -= 1;
+            } else if(news[i].value == 1) {
+                current += 1;
+            }
+            break;
+        }
     }
 
     // Update news
     const newsUpdate = 7;
+    let newsIndex = 0;
     d3.select('#news-time').text(newsUpdate - (secondCount-1)%newsUpdate - 1);
     if (secondCount % newsUpdate == 0) {
         // Work around to select different news items based on given probability
@@ -109,25 +70,81 @@ function updateNews() {
         }
         d3.select('#news-phrase').text(news[newsIndex].phrase);
     }
+    return current;
 }
 
-function updatePrices() {
+function updatePrices(secondCount) {
     const priceUpdate = 3;
     if (secondCount % priceUpdate == 0) {
-        updateBeer();
-        updateSpirits();
+        updateBeer(current);
+        updateSpirits(current);
     }
 }
 
-function updateBeer() {
+function initBeer() {
     let beer = [
-        {drink: "Apple Cider", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Pear Cider", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Corona", priceCurrent: 3.5, priceOriginal: 3.5},
-        {drink: "Asahi", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Stella", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Peroni", priceCurrent: 3, priceOriginal: 3},
-        {drink: "VB", priceCurrent: 2, priceOriginal: 2},
+        {name: "Apple Cider", priceCurrent: 3, priceOriginal: 3},
+        {name: "Pear Cider", priceCurrent: 3, priceOriginal: 3},
+        {name: "Corona", priceCurrent: 3.5, priceOriginal: 3.5},
+        {name: "Asahi", priceCurrent: 3, priceOriginal: 3},
+        {name: "Stella", priceCurrent: 3, priceOriginal: 3},
+        {name: "Peroni", priceCurrent: 3, priceOriginal: 3},
+        {name: "VB", priceCurrent: 2, priceOriginal: 2},
+    ];
+
+    let svg = d3.select("#beer-container").append("svg")
+            .attr('width', '100%')
+            .attr('height', '100%');
+
+    let margin = {top: 20, right: 20, bottom: 30, left: 40};
+    let w = svg.style('width');
+    let width = w.substr(0,w.length-2) - margin.left - margin.right;
+    let h = svg.style('height');
+    let height = h.substr(0,h.length-2)  - margin.top - margin.bottom;
+
+    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
+    let y = d3.scaleLinear().rangeRound([height, 0]);
+
+    let g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(beer.map(function(d) { return d.name; }));
+    y.domain([0, d3.max(beer, function(d) { return d.priceCurrent; })]);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(d3.max(beer, function(d) { return d.priceCurrent; })))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Price");
+
+    g.selectAll(".bar")
+        .data(beer)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.name); })
+        .attr("y", function(d) { return y(d.priceCurrent); })
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(d.priceCurrent); });
+}
+
+function updateBeer(current) {
+    let beer = [
+        {name: "Apple Cider", priceCurrent: 3, priceOriginal: 3},
+        {name: "Pear Cider", priceCurrent: 3, priceOriginal: 3},
+        {name: "Corona", priceCurrent: 3.5, priceOriginal: 3.5},
+        {name: "Asahi", priceCurrent: 3, priceOriginal: 3},
+        {name: "Stella", priceCurrent: 3, priceOriginal: 3},
+        {name: "Peroni", priceCurrent: 3, priceOriginal: 3},
+        {name: "VB", priceCurrent: 2, priceOriginal: 2},
     ];
 
     for (let i = 0; i < beer.length; i++) {
@@ -136,20 +153,21 @@ function updateBeer() {
             beer[i].priceCurrent = 1
         }
     }
+
 }
 
-function updateSpirits() {
+function updateSpirits(current) {
     let spirit = [
-        {drink: "Vodka", priceCurrent: 2.5, priceOriginal: 3},
-        {drink: "Jack Daniels", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Gin", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Tequila", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Jim Beam", priceCurrent: 2.7, priceOriginal: 2.7},
-        {drink: "Rum", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Chambord", priceCurrent: 3.5, priceOriginal: 3.5},
-        {drink: "Baileys", priceCurrent: 2.7, priceOriginal: 2.7},
-        {drink: "Malibu", priceCurrent: 3, priceOriginal: 3},
-        {drink: "Jaegar", priceCurrent: 3, priceOriginal: 3}
+        {name: "Vodka", priceCurrent: 2.5, priceOriginal: 3},
+        {name: "Jack Daniels", priceCurrent: 3, priceOriginal: 3},
+        {name: "Gin", priceCurrent: 3, priceOriginal: 3},
+        {name: "Tequila", priceCurrent: 3, priceOriginal: 3},
+        {name: "Jim Beam", priceCurrent: 2.7, priceOriginal: 2.7},
+        {name: "Rum", priceCurrent: 3, priceOriginal: 3},
+        {name: "Chambord", priceCurrent: 3.5, priceOriginal: 3.5},
+        {name: "Baileys", priceCurrent: 2.7, priceOriginal: 2.7},
+        {name: "Malibu", priceCurrent: 3, priceOriginal: 3},
+        {name: "Jaegar", priceCurrent: 3, priceOriginal: 3}
     ];
 
     for (let i = 0; i < spirit.length; i++) {
@@ -160,7 +178,7 @@ function updateSpirits() {
     }
 }
 
-function updateMean() {
+function updateMean(current) {
     const tooLow = -4.5;
     const tooHigh = 6;
     const adjustment = 0.2;
@@ -171,9 +189,10 @@ function updateMean() {
     } else {
         mean = 0;
     }
+    return mean;
 }
 
-function updateVol(){
+function updateVol(secondCount, currentCollection){
     if (secondCount > 200) {
         let current100 = currentCollection.slice(currentCollection.length - 1, currentCollection.length);
         let maxCurrent = current100.reduce(function (a, b) {
@@ -188,27 +207,5 @@ function updateVol(){
             vol = 0.25;
         }
     }
-}
-
-/** Taken from the RandGen library */
-/** Important: None of the following is mine */
-function rnorm(mean, stdev) {
-    var u1, u2, v1, v2, s;
-    if (mean === undefined) {
-        mean = 0.0;
-    }
-    if (stdev === undefined) {
-        stdev = 1.0;
-    }
-
-    do {
-        u1 = Math.random();
-        u2 = Math.random();
-
-        v1 = 2 * u1 - 1;
-        v2 = 2 * u2 - 1;
-        s = v1 * v1 + v2 * v2;
-    } while (s === 0 || s >= 1);
-    rnorm.v2 = v2 * Math.sqrt(-2 * Math.log(s) / s);
-    return stdev * v1 * Math.sqrt(-2 * Math.log(s) / s) + mean;
+    return vol;
 }
