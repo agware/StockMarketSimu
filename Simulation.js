@@ -9,7 +9,45 @@ let mean = 0;
 let newsIndex = 2;
 let vol = 0.25;
 
+initNews();
+
 d3.timer(generateValues);
+
+function initNews() {
+    let newsSVG = d3.select("#news-container").append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%');
+
+    newsSVG.append('text')
+        .attr('x', '10%')
+        .attr('y', '20%')
+        .style('font-family', 'sans-serif')
+        .style('font-size', '2vw')
+        .text('Latest News');
+
+    newsSVG.append('text')
+        .attr('x', '40%')
+        .attr('y', '20%')
+        .style('font-family', 'sans-serif')
+        .style('font-size', '2vw')
+        .text('Time Until Price Updates');
+
+    newsSVG.append('text')
+        .attr('x', '5%')
+        .attr('y', '70%')
+        .attr('id', 'news-phrase')
+        .style('font-family', 'sans-serif')
+        .style('font-size', '2vw')
+        .text('');
+
+    newsSVG.append('text')
+        .attr('x', '60%')
+        .attr('y', '70%')
+        .attr('id', 'news-time')
+        .style('font-family', 'sans-serif')
+        .style('font-size', '4vw')
+        .text('0');
+}
 
 function generateValues(timeElapsed) {
     let secondsElapsed = Math.floor(timeElapsed/1000);
@@ -57,6 +95,7 @@ function updateNews() {
 
     // Update news
     const newsUpdate = 7;
+    d3.select('#news-time').text(newsUpdate - (secondCount-1)%newsUpdate - 1);
     if (secondCount % newsUpdate == 0) {
         // Work around to select different news items based on given probability
         let temp = Math.random();
@@ -68,7 +107,7 @@ function updateNews() {
                 temp -= news[i].probability;
             }
         }
-        console.log(news[newsIndex].phrase);
+        d3.select('#news-phrase').text(news[newsIndex].phrase);
     }
 }
 
