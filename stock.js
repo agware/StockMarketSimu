@@ -1,7 +1,9 @@
 /**
  * Created by Alex on 12/11/2017.
  */
+const yBound = {'min': -2, 'max': 2};
 let y;
+let x;
 let stockLine;
 
 function initStockGraph(stocks, maxStocksRecorded) {
@@ -26,6 +28,13 @@ function initStockGraph(stocks, maxStocksRecorded) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         .attr('id', 'stock-graph');
 
+    x = d3.scaleLinear()
+        .domain([0, maxStocksRecorded])
+        .range([0, width]);
+    y = d3.scaleLinear()
+        .domain([yBound.min, yBound.max])
+        .range([height, 0]);
+
     // define the line
     stockLine = d3.line()
         .x(function(d, i) { return x(i); })
@@ -37,35 +46,49 @@ function initStockGraph(stocks, maxStocksRecorded) {
         .attr("class", "line")
         .attr("d", stockLine);
 
-    let x = d3.scaleLinear()
-        .domain([0, maxStocksRecorded])
-        .range([0, width]);
-    y = d3.scaleLinear().range([height, 0]);
-
     // add the X Axis
     g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
+        .attr('transform', 'translate(0,' + y(0) + ')')
+        .attr('id', 'x-axis')
         .call(d3.axisBottom(x));
 
     // add the Y Axis
     g.append('g')
         .attr('class', 'y-axis')
         .call(d3.axisLeft(y));
+
+    g.append('circle')
+        .attr('r', 4)
+        .attr('cx',x(stocks.length))
+        .attr('cy',0)
+        .attr('id','stock-circle');
 }
 
 function updateStockGraph(stocks) {
     let g = d3.select('#stock-graph');
 
-    const yBound = {'min': -2, 'max': 2};
     y.domain([Math.min(yBound.min,d3.min(stocks, function(d) {return d; })),
         Math.max(yBound.max,d3.max(stocks, function(d) {return d; }))]);
 
+    let duration = 50;
+
+    g.select('#stock-circle').transition()
+        .duration(duration)
+        .attr('cx', x(stocks.length)-4)
+        .attr('cy', y(stocks[stocks.length-1]));
+
     g.select('.line').transition()
-        .duration(100)
+        .duration(duration)
         .attr('d', stockLine(stocks));
 
+    g.select('#x-axis').transition()
+        .duration(duration)
+        .attr('transform', 'translate(0,' + y(0) + ')');
+
     g.select('.y-axis').transition()
-        .duration(100)
+        .duration(duration)
         .call(d3.axisLeft(y));
+
+
 
 }

@@ -27,6 +27,9 @@
     let secondCount = 0;
     let newsVal = 0;
     const maxStocksRecorded = 100;
+    for(let i = 0; i < maxStocksRecorded; i++) {
+        stocks.push(0);
+    }
 
     initDrinkChart('beer');
     initDrinkChart('spirits');
@@ -67,7 +70,7 @@
             let newsTime = Math.round(newsUpdate - (secondCount-0.5)%newsUpdate - 1);
             d3.select('#news-time').text(newsTime + 's until next update');
             if (secondsElapsed % newsUpdate == 0) {
-                newsVal = updateNews(secondsElapsed);
+                newsVal = updateNews();
             }
 
             // Stock calculation

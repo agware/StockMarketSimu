@@ -26,16 +26,18 @@ text {
 #market-container {
     top: var(--box-padding);
     left: var(--box-padding);
-}
-
-#spirits-container {
-    top: var(--box-padding);
-    right: var(--box-padding);
+    height: 70%;
 }
 
 #news-container {
     bottom: var(--box-padding);
     left: var(--box-padding);
+    height: 24%
+}
+
+#spirits-container {
+    top: var(--box-padding);
+    right: var(--box-padding);
 }
 
 #beer-container {
@@ -66,4 +68,10 @@ text {
 
 #news-time {
     font-size: 2vw;
+}
+
+#stock-circle {
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
 }
