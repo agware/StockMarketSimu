@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="sandbox-styles.css">
+</head>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    const textHeight = 20;
+    const gap = 5;
+    const textGap = textHeight + gap;
+    const width = 960;
+    const height = 500;
+    const margin = {'top': 40, 'left': 10, 'bottom': 10, 'right': 10};
+    const rounding = 5;
+    const menuOpts = ['Low stock ▸', 'Sold out\u00A0\u00A0\u00A0\u00A0▸'];
+    const tick = "✓";
+    let subMenuOpts = ['Beer\u00A0\u00A0\u00A0\u00A0\u00A0', 'Wine\u00A0\u00A0\u00A0\u00A0', 'Spirits\u00A0\u00A0'];
+
+    let svg = d3.select('body').append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    let dropDown = svg.append('g')
+        .attr('transform', 'translate(' + margin.top + ',' + margin.left + ')');
+
+    let menu = dropDown.append('g');
+
+    const menuWidth = 80;
+    const menuHeight = 30;
+    menu.append('rect')
+        .attr('width', menuWidth)
+        .attr('height', menuHeight)
+        .attr('rx', rounding)
+        .attr('ry', rounding)
+        .attr('id', 'menu-rect')
+        .style('fill', 'white');
+
+    menu.append('text')
+        .attr('x', 10)
+        .attr('y', textHeight)
+        .attr('id', 'menu-text')
+        .style('font-size', textHeight)
+        .text('menu ▾');
+
+    let dropMenu = dropDown.append('g')
+        .attr('transform', 'translate(0,' + (menuHeight + gap) + ')');
+
+    const dropMenuWidth = 120;
+    dropMenu.append('rect')
+        .attr('width', dropMenuWidth)
+        .attr('height', menuOpts.length * textGap)
+        .attr('rx', rounding)
+        .attr('ry', rounding)
+        .attr('id', 'drop-menu-rect');
+
+    let dropMenuItems = dropMenu.append('g');
+
+    dropMenuItems.selectAll('rect')
+        .data(menuOpts)
+        .enter()
+        .append('rect')
+        .attr('width', dropMenuWidth - 1)
+        .attr('height', textGap)
+        .attr('x', 1)
+        .attr('y', function(d,i) { return i*textGap; })
+        .attr('rx', rounding)
+        .attr('ry', rounding)
+        .style('fill', 'lightgrey');
+
+    dropMenuItems.selectAll('text')
+        .data(menuOpts)
+        .enter()
+        .append('text')
+        .attr('y', function(d,i) { return i*textGap + textHeight; })
+        .attr('x', gap)
+        .style('font-size', textHeight)
+        .text(function(d) { return d; });
+
+    let subMenu1 = dropMenu.append('g')
+        .attr('transform', 'translate(' + (dropMenuWidth + gap) + ',0)');
+
+    const subMenuWidth = 90;
+    subMenu1.append('rect')
+        .attr('width', subMenuWidth)
+        .attr('height', subMenuOpts.length * textGap)
+        .attr('rx', rounding)
+        .attr('ry', rounding)
+        .attr('id', 'drop-menu-rect');
+
+    let subMenu1Items = subMenu1.append('g');
+
+    subMenu1Items.selectAll('rect')
+        .data(subMenuOpts)
+        .enter()
+        .append('rect')
+        .attr('width', subMenuWidth - 1)
+        .attr('height', textGap)
+        .attr('x', 1)
+        .attr('y', function(d,i) { return i*textGap; })
+        .attr('rx', rounding)
+        .attr('ry', rounding)
+        .style('fill', 'lightgrey');
+
+    subMenu1Items.selectAll('text')
+        .data(subMenuOpts)
+        .enter()
+        .append('text')
+        .attr('y', function(d,i) { return i*textGap + textHeight; })
+        .attr('x', gap)
+        .style('font-size', textHeight)
+        .text(function(d) { return d + tick; });
+
+
+</script>
+
+</body>
+</html>

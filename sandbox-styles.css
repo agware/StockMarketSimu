@@ -1,0 +1,10 @@
+#menu-rect {
+    stroke: grey;
+    stroke-width: 1px;
+}
+
+#drop-menu-rect {
+    fill: white;
+    stroke: grey;
+    stroke-width: 1px;
+}
