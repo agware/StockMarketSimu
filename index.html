@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>Stock Market Simulation</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="logic.js"></script>
+<script src="drinks.js"></script>
+<script src="stock.js"></script>
+<script src="news.js"></script>
 
 <div id="main-container">
     <div id="market-container" class="graph-container"></div>
@@ -16,49 +21,69 @@
     <div id="beer-container" class="graph-container"></div>
 </div>
 
-<script src="Simulation.js"></script>
 <script>
     let stock = rnorm(0,0.1);
-    let stockCollection = [];
+    let stocks = [];
     let secondCount = 0;
-    let mean = 0;
-    let vol = 0.25;
+    let newsVal = 0;
+    const maxStocksRecorded = 100;
 
-    let stockSettings = initStock(stockCollection);
+    initDrinkChart('beer');
+    initDrinkChart('spirits');
     initNews();
-    let beerSettings = initDrink('#beer-container');
-    let spiritSettings = initDrink('#spirits-container');
+    initStockGraph(stocks,maxStocksRecorded);
 
-    d3.timer(generateValues);
+    d3.timer(runSimulation);
 
-    function generateValues(timeElapsed) {
-        let secondsElapsed = Math.floor(timeElapsed/500)/2;
+    function runSimulation(msElapsed) {
+        let secondsElapsed = Math.floor(msElapsed/500)/2;
 
-        const secondsInHour = 360;
-        const hours = 4;
-        const maxTime = hours * secondsInHour;
-        if(secondsElapsed >= maxTime) {
-            // terminate value generation
-            return true;
-        }
+        // Terminate simulation if max time reached
+        const secondsInHour = 360; const hours = 4;
+        const maxTime = secondsInHour*hours;
+        if(secondsElapsed >= maxTime) { return true;}
 
+        // Update simulation every new second value
+        // Currently updating on the half second
         if(secondsElapsed > secondCount) {
-            secondCount = secondsElapsed;
-            stockCollection.push(stock);
-            if(stockCollection.length > 100) {
-                stockCollection.shift();
+            stocks.push(stock);
+
+            // If there are too many stock values recorded, remove the oldest one
+            if(stocks.length > maxStocksRecorded) { stocks.shift();}
+
+            // Update stock graph
+            updateStockGraph(stocks);
+
+            // Update drinks
+            const priceUpdate = 5;
+            if(secondsElapsed % priceUpdate < 0.5 || secondsElapsed < 1) {
+                updateBeer('beer', stock);
+                updateSpirits('spirits', stock);
             }
-            updateStock(stockCollection, stockSettings);
+
+
+            // Update news?
+            const newsUpdate = 4;
+            let newsTime = Math.round(newsUpdate - (secondCount-0.5)%newsUpdate - 1);
+            d3.select('#news-time').text(newsTime + 's until next update');
+            if (secondsElapsed % newsUpdate == 0) {
+                newsVal = updateNews(secondsElapsed);
+            }
+
+            // Stock calculation
+            let mean = calculateMean(stock);
+            let vol = calculateVol(secondsElapsed, stock);
             stock += rnorm(mean, vol);
-            stock = updateNews(secondCount, stock);
-            updatePrices(secondCount, stock, beerSettings, spiritSettings);
+            if(newsVal < 0) {
+                stock -= 0.5;
+            } else if(newsVal > 0) {
+                stock += 0.5;
+            }
 
-            mean = updateMean(stock);
-
-            vol = updateVol(secondCount, stockCollection);
-
+            secondCount = secondsElapsed;
         }
     }
+
 </script>
 
 </body>

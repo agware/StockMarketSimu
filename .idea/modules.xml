@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../StockMarketSimu/.idea/StochMarketSimu.iml" filepath="$PROJECT_DIR$/../StockMarketSimu/.idea/StochMarketSimu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/StockMarketSimu.iml" filepath="$PROJECT_DIR$/.idea/StockMarketSimu.iml" />
     </modules>
   </component>
 </project>

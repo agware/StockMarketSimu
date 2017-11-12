@@ -1,3 +1,11 @@
+:root {
+    --box-padding: 2%;
+}
+
+text {
+    font-family: 'Open Sans', sans-serif;
+}
+
 #main-container {
     position: absolute;
     top: 0;
@@ -9,34 +17,53 @@
 }
 
 .graph-container {
+    position: absolute;
+    border: 2px solid black;
     width: 47%;
     height: 47%;
 }
 
 #market-container {
-    position: absolute;
-    top: 2%;
-    left: 2%;
+    top: var(--box-padding);
+    left: var(--box-padding);
 }
 
 #spirits-container {
-    position: absolute;
-    top: 2%;
-    right: 2%;
+    top: var(--box-padding);
+    right: var(--box-padding);
 }
 
 #news-container {
-    position: absolute;
-    bottom: 2%;
-    left: 2%;
+    bottom: var(--box-padding);
+    left: var(--box-padding);
 }
 
 #beer-container {
-    position: absolute;
-    bottom: 2%;
-    right: 2%;
+    bottom: var(--box-padding);
+    right: var(--box-padding);
+}
+
+.title {
+    font-size: 3vh;
+    font-weight: bold;
 }
 
 .bar {
-    fill: #cbcbcb;
+    fill: #DCDCDC;
+}
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+}
+
+.news {
+    font-size: 3vw;
+}
+
+#news-time {
+    font-size: 2vw;
 }
