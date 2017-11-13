@@ -21,7 +21,7 @@ function calculateMean(stock) {
 function calculateVol(secondsElapsed, stocks) {
     //ToDo: Why hinge on 200 secs?
     let vol = 0.25;
-    if (secondsElapsed > 200) {
+    if (secondsElapsed > 5) {
         let maxStock = stocks.reduce(function (a, b) {
             return Math.max(a, b)
         });

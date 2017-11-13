@@ -75,7 +75,7 @@
 
             // Stock calculation
             let mean = calculateMean(stock);
-            let vol = calculateVol(secondsElapsed, stock);
+            let vol = calculateVol(secondsElapsed, stocks);
             stock += rnorm(mean, vol);
             if(newsVal < 0) {
                 stock -= 0.5;
