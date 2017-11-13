@@ -71,7 +71,7 @@ text {
 }
 
 #stock-circle {
-    fill: none;
-    stroke: black;
+    fill: lightsteelblue;
+    stroke: #315b7d;
     stroke-width: 2px;
 }

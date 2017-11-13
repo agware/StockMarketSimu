@@ -52,7 +52,7 @@ function updateSpirits(tag, stock) {
 
 function initDrinkChart(tag) {
 
-    let svg = d3.select('#' + tag + '-container').append('svg')
+    let svg = d3.selectAll('#' + tag + '-container').append('svg')
         .attr('width', '100%')
         .attr('height', '100%')
         .attr('id', tag + '-svg');
