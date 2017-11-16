@@ -59,9 +59,8 @@
             updateStockGraph(stocks);
 
             // Update drinks
-            const priceUpdate = 5*secsInMin;
-            let newsTime = priceUpdate - secondsElapsed%priceUpdate - 1;
-            if(secondsElapsed % priceUpdate < 0.5 || secondsElapsed < 3) {
+            const priceUpdate = 2*secsInMin;
+            if(secondsElapsed % priceUpdate == 0 || secondsElapsed < 3) {
                 updateBeer('beer', stock);
                 updateSpirits('spirits', stock);
             }
@@ -69,6 +68,7 @@
 
             // Update news
             const newsUpdate = 3*secsInMin;
+            let newsTime = priceUpdate - secondsElapsed%priceUpdate - 1;
             d3.select('#news-time').text(newsTime + 's until next update');
             if (secondsElapsed % newsUpdate == 0 || secondsElapsed < 2) {
                 stock = updateNews(stock);
