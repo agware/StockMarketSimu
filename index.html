@@ -25,7 +25,6 @@
     let stock = rnorm(0,0.1);
     let stocks = [];
     let secondCount = 0;
-    let newsVal = 0;
     const maxStocksRecorded = 100;
     for(let i = 0; i < maxStocksRecorded; i++) {
         stocks.push(0);
@@ -39,11 +38,13 @@
     d3.timer(runSimulation);
 
     function runSimulation(msElapsed) {
-        let secondsElapsed = Math.floor(msElapsed/500)/2;
+        let secondsElapsed = Math.floor(msElapsed/1000);
 
         // Terminate simulation if max time reached
-        const secondsInHour = 360; const hours = 4;
-        const maxTime = secondsInHour*hours;
+        const minsInHour = 60;
+        const secsInMin = 60;
+        const hours = 4;
+        const maxTime = secsInMin*minsInHour*hours;
         if(secondsElapsed >= maxTime) { return true;}
 
         // Update simulation every new second value
@@ -58,30 +59,25 @@
             updateStockGraph(stocks);
 
             // Update drinks
-            const priceUpdate = 7;
-            if(secondsElapsed % priceUpdate < 0.5 || secondsElapsed < 1.5) {
+            const priceUpdate = 5*secsInMin;
+            if(secondsElapsed % priceUpdate < 0.5 || secondsElapsed < 3) {
                 updateBeer('beer', stock);
                 updateSpirits('spirits', stock);
             }
 
 
             // Update news?
-            const newsUpdate = 4;
-            let newsTime = Math.round(newsUpdate - (secondCount-0.5)%newsUpdate - 1);
+            const newsUpdate = 3*minsInHour;
+            let newsTime = newsUpdate - secondsElapsed%newsUpdate - 1;
             d3.select('#news-time').text(newsTime + 's until next update');
-            if (secondsElapsed % newsUpdate == 0 || secondsElapsed < 1.5) {
-                newsVal = updateNews();
+            if (secondsElapsed % newsUpdate == 0) {
+                stock = updateNews(stock);
             }
 
             // Stock calculation
             let mean = calculateMean(stock);
             let vol = calculateVol(secondsElapsed, stocks);
             stock += rnorm(mean, vol);
-            if(newsVal < 0) {
-                stock -= 0.5;
-            } else if(newsVal > 0) {
-                stock += 0.5;
-            }
 
             secondCount = secondsElapsed;
         }
