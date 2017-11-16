@@ -13,14 +13,12 @@
 <script src="drinks.js"></script>
 <script src="stock.js"></script>
 <script src="news.js"></script>
-<script src="beeMovie.js"></script>
 
 <div id="main-container">
     <div id="market-container" class="graph-container"></div>
     <div id="spirits-container" class="graph-container"></div>
     <div id="news-container" class="graph-container"></div>
     <div id="beer-container" class="graph-container"></div>
-    <div id="bee-movie-container" class="graph-container"></div>
 </div>
 
 <script>
@@ -31,44 +29,33 @@
     for(let i = 0; i < maxStocksRecorded; i++) {
         stocks.push(0);
     }
-
     initDrinkChart('beer');
     initDrinkChart('spirits');
     initNews();
     initStockGraph(stocks,maxStocksRecorded);
-    initBeeMovie();
-
     d3.timer(runSimulation);
-
     function runSimulation(msElapsed) {
         let secondsElapsed = Math.floor(msElapsed/1000);
-
         // Terminate simulation if max time reached
         const minsInHour = 60;
         const secsInMin = 60;
         const hours = 4;
         const maxTime = secsInMin*minsInHour*hours;
         if(secondsElapsed >= maxTime) { return true;}
-
         // Update simulation every new second value
         // Currently updating on the half second
         if(secondsElapsed > secondCount) {
             stocks.push(stock);
-
             // If there are too many stock values recorded, remove the oldest one
             if(stocks.length > maxStocksRecorded) { stocks.shift();}
-
             // Update stock graph
             updateStockGraph(stocks);
-
             // Update drinks
             const priceUpdate = 2*secsInMin;
             if(secondsElapsed % priceUpdate == 1 || secondsElapsed < 3) {
                 updateBeer('beer', stock);
                 updateSpirits('spirits', stock);
             }
-
-
             // Update news
             const newsUpdate = 2*secsInMin;
             let newsTime = priceUpdate - secondsElapsed%priceUpdate - 1;
@@ -76,16 +63,13 @@
             if (secondsElapsed % newsUpdate == 0 || secondsElapsed < 2) {
                 stock = updateNews(stock);
             }
-
             // Stock calculation
             let mean = calculateMean(stock, stocks);
             let vol = calculateVol(secondsElapsed, stocks);
             stock += rnorm(mean, vol);
-
             secondCount = secondsElapsed;
         }
     }
-
 </script>
 
 </body>
