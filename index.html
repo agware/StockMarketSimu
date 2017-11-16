@@ -70,7 +70,7 @@
             const newsUpdate = 3*minsInHour;
             let newsTime = newsUpdate - secondsElapsed%newsUpdate - 1;
             d3.select('#news-time').text(newsTime + 's until next update');
-            if (secondsElapsed % newsUpdate == 0) {
+            if (secondsElapsed % newsUpdate == 0 || secondsElapsed < 2) {
                 stock = updateNews(stock);
             }
 
