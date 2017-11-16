@@ -18,6 +18,6 @@ function initBeeMovie() {
         .text(bee);
 
     text.transition()
-        .duration(1000000)
-        .attr('x', -100000000);
+        .duration(100000)
+        .attr('x', -1000000);
 }
