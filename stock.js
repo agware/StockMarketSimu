@@ -70,7 +70,7 @@ function updateStockGraph(stocks) {
     y.domain([Math.min(yBound.min,d3.min(stocks, function(d) {return d; })),
         Math.max(yBound.max,d3.max(stocks, function(d) {return d; }))]);
 
-    let duration = 100;
+    let duration = 50;
 
     g.select('#stock-circle').transition()
         .duration(duration)
