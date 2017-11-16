@@ -67,7 +67,7 @@
 
 
             // Update news
-            const newsUpdate = 3*minsInHour;
+            const newsUpdate = 3*secsInMin;
             let newsTime = newsUpdate - secondsElapsed%newsUpdate - 1;
             d3.select('#news-time').text(newsTime + 's until next update');
             if (secondsElapsed % newsUpdate == 0 || secondsElapsed < 2) {

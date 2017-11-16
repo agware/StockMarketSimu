@@ -58,10 +58,11 @@ function updateNews(stock) {
     d3.select('#news-phrase').text(news[newsIndex].phrase);
     d3.select('#news-reaction').text(news[newsIndex].reaction);
 
+    const shift = 2;
     if(news[newsIndex].value < 0) {
-        stock -= 1;
+        stock -= shift;
     } else if(news[newsIndex].value > 0) {
-        stock += 1;
+        stock += shift;
     }
 
 
