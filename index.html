@@ -13,12 +13,14 @@
 <script src="drinks.js"></script>
 <script src="stock.js"></script>
 <script src="news.js"></script>
+<script src="beeMovie.js"></script>
 
 <div id="main-container">
     <div id="market-container" class="graph-container"></div>
     <div id="spirits-container" class="graph-container"></div>
     <div id="news-container" class="graph-container"></div>
     <div id="beer-container" class="graph-container"></div>
+    <div id="bee-movie-container" class="graph-container"></div>
 </div>
 
 <script>
@@ -34,6 +36,7 @@
     initDrinkChart('spirits');
     initNews();
     initStockGraph(stocks,maxStocksRecorded);
+    initBeeMovie();
 
     d3.timer(runSimulation);
 

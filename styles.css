@@ -20,19 +20,19 @@ text {
     position: absolute;
     border: 2px solid black;
     width: 47%;
-    height: 47%;
+    height: 37%;
 }
 
 #market-container {
     top: var(--box-padding);
     left: var(--box-padding);
-    height: 70%;
+    height: 60%;
 }
 
 #news-container {
-    bottom: var(--box-padding);
+    bottom: 22%;
     left: var(--box-padding);
-    height: 24%
+    height: 14%
 }
 
 #spirits-container {
@@ -41,8 +41,15 @@ text {
 }
 
 #beer-container {
-    bottom: var(--box-padding);
+    bottom: 22%;
     right: var(--box-padding);
+}
+
+#bee-movie-container{
+    bottom: var(--box-padding);
+    left: var(--box-padding);
+    height: 18%;
+    width: 96%;
 }
 
 .title {
@@ -63,7 +70,7 @@ text {
 }
 
 .news {
-    font-size: 3vw;
+    font-size: 2vw;
 }
 
 #news-time {

@@ -8,21 +8,21 @@ function initNews() {
 
     newsSVG.append('text')
         .attr('x', '5%')
-        .attr('y', '20%')
+        .attr('y', '25%')
         .attr('class', 'news')
         .attr('id', 'news-time')
         .text('');
 
     newsSVG.append('text')
         .attr('x', '5%')
-        .attr('y', '50%')
+        .attr('y', '55%')
         .attr('class', 'news')
         .attr('id', 'news-phrase')
         .text('');
 
     newsSVG.append('text')
         .attr('x', '5%')
-        .attr('y', '85%')
+        .attr('y', '90%')
         .attr('class', 'news')
         .attr('id', 'news-reaction')
         .text('');
