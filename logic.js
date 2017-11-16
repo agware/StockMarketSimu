@@ -2,13 +2,27 @@
  * Created by Alex on 12/11/2017.
  */
 
-function calculateMean(stock) {
+let flag = false;
+
+function calculateMean(stock, stocks) {
     let mean = 0;
 
     const tooLow = -4.5;
     const tooHigh = 6;
     const adjustment = 0.2;
-    if (stock < tooLow) {
+
+    if(stocks.every(function (a) {
+        return a < 0;
+    })) {
+        flag = true;
+    }
+
+    if (flag) {
+        mean = adjustment;
+        if(stock >= 2) {
+            flag = false;
+        }
+    } else if (stock < tooLow) {
         mean = adjustment;
     } else if (stock > tooHigh) {
         mean = -adjustment;

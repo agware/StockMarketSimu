@@ -75,7 +75,7 @@
             }
 
             // Stock calculation
-            let mean = calculateMean(stock);
+            let mean = calculateMean(stock, stocks);
             let vol = calculateVol(secondsElapsed, stocks);
             stock += rnorm(mean, vol);
 
